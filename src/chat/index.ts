@@ -1,4 +1,4 @@
-import { settings } from "@elizaos/core";
+import { settings } from "@gritlab/core";
 import readline from "readline";
 
 const rl = readline.createInterface({

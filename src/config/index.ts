@@ -1,9 +1,8 @@
-import { Character, ModelProviderName, settings, validateCharacterConfig } from "@elizaos/core";
+import { Character, ModelProviderName, settings, validateCharacterConfig } from "@gritlab/core";
 import fs from "fs";
 import path from "path";
 import yargs from "yargs";
 import jsYaml from "js-yaml";
-import { v4 as uuidv4 } from "uuid";
 
 export function parseArguments(): {
   character?: string;

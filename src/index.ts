@@ -1,21 +1,19 @@
-import { DirectClient } from "@elizaos/client-direct";
+import { DirectClient } from "@gritlab/client-direct";
 import {
   AgentRuntime,
   elizaLogger,
   settings,
   stringToUuid,
   type Character,
-} from "@elizaos/core";
+} from "@gritlab/core";
 import { bootstrapPlugin } from "@elizaos/plugin-bootstrap";
 import { createNodePlugin } from "@elizaos/plugin-node";
-import { solanaPlugin } from "@elizaos/plugin-solana";
 import fs from "fs";
 import net from "net";
 import path from "path";
 import { fileURLToPath } from "url";
 import { initializeDbCache } from "./cache/index.ts";
 import { character } from "./character.ts";
-import { startChat } from "./chat/index.ts";
 import { initializeClients } from "./clients/index.ts";
 import {
   getTokenForProvider,
@@ -61,7 +59,6 @@ export function createAgent(
     plugins: [
       bootstrapPlugin,
       nodePlugin,
-      character.settings?.secrets?.WALLET_PUBLIC_KEY ? solanaPlugin : null,
     ].filter(Boolean),
     providers: [],
     actions: [],

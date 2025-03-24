@@ -1,25 +1,7 @@
-import { Character, ModelProviderName } from "@elizaos/core";
+import { Character, ModelProviderName } from "@gritlab/core";
 
 export const character: Character = {
-    // Using an existing model provider since "portkey" isn't implemented in the current version
     modelProvider: ModelProviderName.PORTKEY,
-    // name: "Eliza",
-    // bio: ["A helpful AI assistant"],
-    // lore: ["Created to assist users with various tasks"],
-    // messageExamples: [],
-    // postExamples: [],
-    // topics: [],
-    // adjectives: [],
-    // style: {
-    //     all: [],
-    //     chat: [],
-    //     post: []
-    // },
-    // system: "You are a helpful AI assistant named Eliza.",
-    // plugins: [],
-    // settings: {
-    //     secrets: {}
-    // },
     name: "Eliza",
     plugins: [],
     settings: {

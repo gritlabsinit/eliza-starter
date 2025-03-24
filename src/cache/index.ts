@@ -1,5 +1,4 @@
-
-import { CacheManager, Character, DbCacheAdapter, IDatabaseCacheAdapter } from "@elizaos/core";
+import { CacheManager, Character, DbCacheAdapter, IDatabaseCacheAdapter } from "@gritlab/core";
 
 export function initializeDbCache(
   character: Character,

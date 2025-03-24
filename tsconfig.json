@@ -19,6 +19,11 @@
     "checkJs": false,
     "noEmitOnError": false,
     "moduleDetection": "force",
-    "allowArbitraryExtensions": true
+    "allowArbitraryExtensions": true,
+    "baseUrl": ".",
+    "paths": {
+      "@elizaos/core": ["node_modules/@gritlab/core"],
+      "@elizaos/client-direct": ["node_modules/@gritlab/client-direct"]
+    }
   }
 }
