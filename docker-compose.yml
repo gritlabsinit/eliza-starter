@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  eliza-starter:
+    build:
+      context: ../
+      dockerfile: ./eliza-starter/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+    environment:
+      - NODE_ENV=production
+      # OpenRouter API keys
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      # ElevenLabs voice settings
+      - ELEVENLABS_XI_API_KEY=${ELEVENLABS_XI_API_KEY:-}
+      - ELEVENLABS_MODEL_ID=eleven_multilingual_v2
+      - ELEVENLABS_VOICE_ID=21m00Tcm4TlvDq8ikWAM
+      - ELEVENLABS_VOICE_STABILITY=0.5
+      - ELEVENLABS_VOICE_SIMILARITY_BOOST=0.9
+      - ELEVENLABS_VOICE_STYLE=0.66
+      - ELEVENLABS_VOICE_USE_SPEAKER_BOOST=false
+      - ELEVENLABS_OPTIMIZE_STREAMING_LATENCY=4
+      - ELEVENLABS_OUTPUT_FORMAT=pcm_16000
+      # PortKey related environment variables
+      - PORTKEY_API_KEY=${PORTKEY_API_KEY:-}
+      - PORTKEY_GATEWAY_URL=${PORTKEY_GATEWAY_URL:-}
+      - PORTKEY_BASE_URL=${PORTKEY_BASE_URL:-}
+      - PORTKEY_VIRTUAL_KEY=${PORTKEY_VIRTUAL_KEY:-}
+      # Embedding model settings
+      - EMBEDDING_PORTKEY_MODEL=openai/text-embedding-3-small
+      # Database settings
+      - POSTGRES_URL=${POSTGRES_URL:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

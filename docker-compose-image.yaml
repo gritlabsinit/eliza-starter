@@ -11,6 +11,7 @@ services:
             - DISCORD_APPLICATION_ID=
             - DISCORD_API_TOKEN=
             - REDPILL_API_KEY=
+            - PORTKEY_API_KEY=
             - REDPILL_MODEL=
             - ELEVENLABS_XI_API_KEY=
             - ELEVENLABS_MODEL_ID=eleven_multilingual_v2

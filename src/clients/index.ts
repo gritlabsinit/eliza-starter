@@ -9,32 +9,38 @@ export async function initializeClients(
   runtime: IAgentRuntime
 ) {
   const clients = [];
-  const clientTypes = character.clients?.map((str) => str.toLowerCase()) || [];
+  
+  // Handle clients in a type-safe way
+  // We'll check for clientConfig properties instead of using the clients array
+  // since the interface is different between versions
+  
+  // Auto client
+  const autoClient = await AutoClientInterface.start(runtime as any);
+  if (autoClient) clients.push(autoClient);
 
-  if (clientTypes.includes("auto")) {
-    const autoClient = await AutoClientInterface.start(runtime);
-    if (autoClient) clients.push(autoClient);
+  // Discord client - check if Discord config exists
+  if (character.clientConfig?.discord) {
+    clients.push(await DiscordClientInterface.start(runtime as any));
   }
 
-  if (clientTypes.includes("discord")) {
-    clients.push(await DiscordClientInterface.start(runtime));
-  }
-
-  if (clientTypes.includes("telegram")) {
-    const telegramClient = await TelegramClientInterface.start(runtime);
+  // Telegram client - check if Telegram config exists
+  if (character.clientConfig?.telegram) {
+    const telegramClient = await TelegramClientInterface.start(runtime as any);
     if (telegramClient) clients.push(telegramClient);
   }
 
-  if (clientTypes.includes("twitter")) {
-    const twitterClients = await TwitterClientInterface.start(runtime);
-    clients.push(twitterClients);
+  // Twitter client
+  if (character.twitterProfile) {
+    const twitterClients = await TwitterClientInterface.start(runtime as any);
+    if (twitterClients) clients.push(twitterClients);
   }
 
+  // Initialize plugins
   if (character.plugins?.length > 0) {
     for (const plugin of character.plugins) {
       if (plugin.clients) {
         for (const client of plugin.clients) {
-          clients.push(await client.start(runtime));
+          clients.push(await client.start(runtime as any));
         }
       }
     }

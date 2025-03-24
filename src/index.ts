@@ -21,6 +21,9 @@ import {
   getTokenForProvider,
   loadCharacters,
   parseArguments,
+  loadAgentsFromYaml,
+  agentToCharacter,
+  AgentConfig
 } from "./config/index.ts";
 import { initializeDatabase } from "./database/index.ts";
 
@@ -90,6 +93,7 @@ async function startAgent(character: Character, directClient: DirectClient) {
     await runtime.initialize();
 
     runtime.clients = await initializeClients(character, runtime);
+    console.log("Agent ID:", runtime.agentId);
 
     directClient.registerAgent(runtime);
 
@@ -132,15 +136,40 @@ const startAgents = async () => {
   const args = parseArguments();
 
   let charactersArg = args.characters || args.character;
-  let characters = [character];
+  let characters: Character[] = [character];
+  let agents: AgentConfig[] = [];
 
-  console.log("charactersArg", charactersArg);
-  if (charactersArg) {
+  // Check if agents.yml path is provided or use default
+  if (args.agents || fs.existsSync(path.resolve(process.cwd(), "config/agents.yml"))) {
+    // Load agents from YAML file
+    agents = loadAgentsFromYaml(args.agents);
+    
+    if (agents.length > 0) {
+      // Log the loaded agents
+      console.log(`Loaded ${agents.length} agents from YAML configuration.`);
+      
+      // Convert agents to characters
+      const agentCharacters = agents.map(agent => agentToCharacter(agent));
+      
+      // Use agents if specified, otherwise use default or specified characters
+      characters = agentCharacters;
+    } else {
+      console.log("No agents found in YAML file. Using default character.");
+    }
+  } else if (charactersArg) {
+    // Use traditional character loading if specified
+    console.log("Loading characters from specified path:", charactersArg);
     characters = await loadCharacters(charactersArg);
+  } else {
+    console.log("Using default character.");
   }
-  console.log("characters", characters);
+
   try {
     for (const character of characters) {
+      // Generate the character's ID if not already set
+      character.id ??= stringToUuid(character.name);
+      // Log agent's name and ID before starting it
+      console.log(`Starting Agent - ID: ${character.id} | Name: ${character.name}`);
       await startAgent(character, directClient as DirectClient);
     }
   } catch (error) {
@@ -164,12 +193,7 @@ const startAgents = async () => {
     elizaLogger.log(`Server started on alternate port ${serverPort}`);
   }
 
-  const isDaemonProcess = process.env.DAEMON_PROCESS === "true";
-  if(!isDaemonProcess) {
-    elizaLogger.log("Chat started. Type 'exit' to quit.");
-    const chat = startChat(characters);
-    chat();
-  }
+  return directClient;
 };
 
 startAgents().catch((error) => {
